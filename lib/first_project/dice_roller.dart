@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:first_app/first_project/styled_text.dart';
 
 final randomizer = Random();
 
@@ -14,6 +13,8 @@ class DiceRoller extends StatefulWidget {
 
   @override
   State<DiceRoller> createState() {
+    // StatefulWidget을 만들 때 반드시 createState() 메서드를 오버라이드 해야함
+    // 이 메서드는 위젯의 상태를 관리할 State 객체를 반환
     return _DiceRollerState();
   }
 }

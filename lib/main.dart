@@ -6,6 +6,7 @@ void main() {
   // void: 반환유형 main: 함수이름
   // main()은 Flutter/Dart에서 자동으로 실행되는 함수이기 때문에 별도로 호출할 필요가 없어
   runApp( // Flutter 애플리케이션의 실행을 시작
+    // FirstProject(colors: [Colors.red, Colors.blue])
     const Quiz()
   );
   // runApp()을 통해 최상위 위젯을 Flutter 엔진에 등록하면 화면이 그려짐
