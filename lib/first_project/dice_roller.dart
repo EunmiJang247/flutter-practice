@@ -28,6 +28,7 @@ class _DiceRollerState extends State<DiceRoller> {
     });
     // 이렇게 UI가 변한다면 StatelessWidget -> StatefulWidget으로 변경해야함
     // 그래서 StatefulWidget을 하나 만들었다
+    // setState가 실행되면 아래 build가 한번 더 실행된다
   }
 
   @override
