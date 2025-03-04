@@ -1,9 +1,12 @@
-import 'package:first_app/second_project/answer_button.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:first_app/second_project/answer_button.dart';
 import 'package:first_app/second_project/data/questions.dart';
 
 class QuestionsScreen extends StatefulWidget {
-  const QuestionsScreen({super.key});
+  const QuestionsScreen({super.key, required this.onSelectAnswer});
+
+  final void Function(String answer) onSelectAnswer;
 
   @override
   State<QuestionsScreen> createState() {
@@ -14,7 +17,8 @@ class QuestionsScreen extends StatefulWidget {
 class _QuestionsScreenState extends State<QuestionsScreen> {
   var currentQuestionIndex = 0;
 
-  void answerQuestion(){
+  void answerQuestion(String selecteAnswer) {
+    widget.onSelectAnswer(selecteAnswer);
     setState(() {
       currentQuestionIndex += 1;
     });
@@ -23,7 +27,6 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
   @override
   Widget build(context) {
     final currentQuestion = questions[currentQuestionIndex];
-    print(currentQuestion);
 
     return SizedBox(
       width: double.infinity,
@@ -35,24 +38,21 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
           children: [
             Text(
               currentQuestion.text,
-              style: TextStyle(color: Colors.white),
+              style: GoogleFonts.lato(
+                  color: const Color.fromARGB(255, 201, 153, 251),
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             const SizedBox(
               height: 30,
             ),
             ...currentQuestion.getShuffledAnswers().map((answer) {
-              // ...(spread operator)를 써야 하는 이유
-              // Flutter의 Column 위젯에서 children 속성은 
-              //**위젯 리스트(List<Widget>)**를 받습니다. 
-              //하지만 .map() 함수는 Iterable을 반환하므로,
-              // 이를 리스트로 변환해 주어야 합니다. ...를 사용하면 
-              //Iterable<Widget>을 List<Widget>로 펼쳐서(spread) 
-              //전달할 수 있습니다.
-        
               return AnswerButton(
-                answer: answer,
-                onTap: answerQuestion);
+                  answer: answer,
+                  onTap: () {
+                    answerQuestion(answer);
+                  });
             }),
           ],
         ),
