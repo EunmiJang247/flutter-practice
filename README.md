@@ -198,8 +198,466 @@ ex)
             });
     }),
 
-# 
+# Uuid 쓰기
+다운로드: import 'package:uuid/uuid.dart';
+dependencies:
+  flutter:
+    sdk: flutter
+  uuid: ^3.0.6  # 최신 버전으로 설정하세요.
+그 다음
+flutter pub get
+사용방법:
+class Expenses {
+  Expenses({required this.title, required this.amount, required this.date})
+      : id = uuid.v4();
+} => 초기화 할때마다 id가 고유하게 생긴다
+다시 빌드
+flutter run
+
+# 애뮬레이터에서 키보드 올라오게 키는 방법
+command + shift + K 하면 된다.
+
+# 크롬에서 플러터 디버깅
+Shift command p -> open dev tools in browser 클릭
+
+# RiverPod다운받기
+flutter pub add flutter_riverpod
+
+!세번째 프로젝트!
+# 테마 적용하기 
+ColorScheme.fromSeed() : 
+지정한 색상(seedColor)을 기반으로 다양한 색상이 자동 생성된다
+두가지를 만들어야 한다. 밝은 모드와 어두운 모드.
+ex)
+var kColorScheme = ColorScheme.fromSeed(
+  seedColor: const Color.fromARGB(255, 96, 59, 181),
+);
+이고 사용은 MaterialApp 안에 theme:을 선언한다
+ex)
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData().copyWith(
+        colorScheme: kColorScheme,
+        appBarTheme: const AppBarTheme().copyWith(
+          backgroundColor: kColorScheme.onPrimaryContainer,
+          foregroundColor: kColorScheme.primaryContainer,
+        ),
+        
+그리고 앱 안에서 colorScheme을 사용할 때는
+
+ThemeData() → Flutter의 기본 테마 설정
+.copyWith({...}) → 기본 테마를 유지하면서 일부만 변경
+
+그리고 colorScheme사용법은
+ex)
+    return ListView.builder(
+        itemCount: expenses.length,
+        itemBuilder: (ctx, index) => Dismissible(
+              key: ValueKey(expenses[index]),
+              background: Container(
+                color: Theme.of(context).colorScheme.error.withOpacity(0.75),
+이다.
+
+# 쓸 수 있는 ColorScheme
+ColorScheme에는 총 13가지 색상 속성이 있어.
+속성명	설명	라이트 모드	다크 모드
+- primary:	기본 색상 (앱의 주요 색상)	seedColor 기반	seedColor 기반
+- onPrimary:	primary 위에 표시되는 텍스트/아이콘 색상	흰색(보통)	검은색(보통)
+- primaryContainer:	primary보다 연한 배경 색상	연한  primary	어두운 primary
+- onPrimaryContainer:	primaryContainer 위에 표시되는 텍스트/아이콘 색상	primary	연한 primary
+- secondary:	보조 색상	seedColor 기반	seedColor 기반
+- onSecondary:	secondary 위에 표시되는 텍스트/아이콘 색상	흰색(보통)	검은색(보통)
+- secondaryContainer:	secondary보다 연한 배경 색상	연한 - secondary:	어두운 secondary
+- onSecondaryContainer:	secondaryContainer 위에 표시되는 텍스트/아이콘 색상	secondary	연한 secondary
+- error:	에러 색상 (보통 빨간색)	빨강 (#B00020)	밝은 빨강 (#CF6679)
+- onError:	error 위에 표시되는 텍스트/아이콘 색상	흰색(보통)	검은색(보통)
+- background:	기본 배경 색상	seedColor 기반	seedColor 기반
+- onBackground:	background 위에 표시되는 텍스트 색상	검은색	흰색
+- surface:	카드, 다이얼로그 같은 표면 색상	연한 회색 (#FFFFFF)	어두운 회색 (#121212)
+onSurface:	surface 위에 표시되는 텍스트 색상	검은색	흰색
+
+# 테마 변수를 지정하기(titleLarge)
+textTheme에 titleLarge 라는 테마변수를 저장했다. 
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: textTheme: ThemeData().textTheme.copyWith(
+              titleLarge: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: kColorScheme.onSecondaryContainer,
+                  fontSize: 16),
+            ),
+      ),
+이 titleLarge 를 적용하기 위해 style: Theme.of(context).textTheme.titleLarge 이렇게 사용한다. 
+ex)
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              expense.title,
+              style: Theme.of(context).textTheme.titleLarge,
+              // theme을 쓰지만 그외 다른거는 내가 커스터마이징 하고싶을 때 copyWith을 쓴다
+            ),
+
+# theme 안에 cardTheme을 정의하면 그 밑의 모든 Card위젯에 적용된다
+ex)
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData().copyWith(
+        cardTheme: CardTheme().copyWith(
+          color: kColorScheme.secondaryContainer,
+          margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        ),
+      ),
+
+# theme을 쓰지만 그외 다른거는 내가 커스터마이징 하고싶을 때 copyWith을 쓴다
 
 
+# 어두운 모드일때와 밝을때 테마정의 MaterialApp에서 진행하기
+return MaterialApp(
+  darkTheme: ThemeData.dark().copyWith(
+    ...
+  ),
+  theme: ThemeData().copyWith(
+    ...
+  )
+)
 
+# 다크/라이트모드 적용하는 것은 MaterialApp에서 정의한다
+themeMode: ThemeMode.dark,로 쓰면 다크모드만
+themeMode: ThemeMode.light로 쓰면 라이트모드임
+ex)
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      themeMode: ThemeMode.system, // 시스템의 설정에 맞춘 밝기테마
+      home: const Expenses(),
+    );
+
+# 모달 열기
+버튼을 누르면 모달이 열리게 하는 버튼을 만든다
+ex)
+return Scaffold(
+  appBar: AppBar(
+    title: Text('Flutter Expense Tracker'),
+    actions: [
+      IconButton(
+          onPressed: _openAddExpenseOverlay, icon: const Icon(Icons.add))
+    ],
+아래가 열리는 함수이다 
+  void _openAddExpenseOverlay() {
+    showModalBottomSheet(
+      useSafeArea: true, // -->  이거를 설정하면 위의 시간이나 배터리를 나타내는 상태바에 침범하지 않고 그 밑에부터 화면이 나옴
+      isScrollControlled: true, // --> 모달이 전체화면을 차지하도록
+      context: context,
+      builder: (ctx) => NewExpense(addNewList: addNewList), // ctx: 모달의 컨텍스트이다
+    );
+    // showModalBottomSheet 함수는 내부적으로 현재 위젯 트리에서 제공된 context를 사용하여 모달을 표시합니다.
+    // context는 위젯이 트리에서 어디에 위치하는지를 나타내는 역할을 하고,
+    // 이를 이용해 모달, 테마, 네비게이션 등을 조작할 수 있다
+  }
+
+# 모달 닫기
+ex)
+  TextButton(
+      onPressed: () {
+        Navigator.pop(context);
+        // 모달접기
+      },
+      child: const Text('Cancel')),
+
+# context란?
+BuildContext는 위젯 트리에서 특정 위젯의 위치를 나타내는 객체이다
+함수들이 현재 위젯이 속한 BuildContext를 사용해서 부모 요소의 데이터를 찾을 때 사용된다. 
+
+# 리스트로 쓰이는 위젯
+1. ListView.builder: 길이를 알수없는 리스트는 이걸 쓴다(보이기 직전에만 생성되어 메모리를 아낄 수 있음)
+
+# 왼쪽으로 밀어서 지우는것 구현하기
+Dismissible위젯을 사용한다
+그리고 삭제하는 부분은 onDismissed에 정의한다
+ex) 
+@override
+Widget build(BuildContext context) {
+  return ListView.builder(
+      itemCount: expenses.length,
+      itemBuilder: (ctx, index) => Dismissible(
+        key: ValueKey(expenses[index]),
+        onDismissed: (direction) {
+          onRemoveExpense(expenses[index]);
+        },
+      ) ...
+
+# 폼에 text input 사용하기
+1. TextEditingController 선언하기 
+final _titleController = TextEditingController();
+2. dispose 선언하기
+하는이유: TextEditingController 같은 객체는 위젯이 없어져도 자동으로 정리되지 않아!
+따라서 직접 dispose()를 호출해서 메모리에서 해제해 줘야 해
+ex)
+@override
+void dispose() {
+  _titleController.dispose();
+  super.dispose();
+}
+3. TextField 위젯에 적용
+child: TextField(
+  controller: _titleController,
+  maxLength: 50,
+  decoration:
+      const InputDecoration(label: Text('Title')),
+),
+4. _titleController.text와 같이 값을 불러와서 사용한다
+widget.addNewList(Expense(
+    title: _titleController.text,
+    amount: enteredAmount,
+    date: DateTime.now(),
+    category: _selectedCategory));
+
+# 부모의 함수를 자식이 사용해서 값을 부모 위젯으로 올릴 때 
+addNewList를 상속 받았다면 
+상속받을 때는 아래와 같이 쓰고
+class NewExpense extends StatefulWidget {
+  const NewExpense({super.key, required this.addNewList});
+  final void Function(Expense answer) addNewList;
+
+이거를 진짜 사용하는 부분에서는 widget.으로 받아서 값을 전달한다
+widget.addNewList(Expense(
+    title: _titleController.text,
+    amount: enteredAmount,
+    date: DateTime.now(),
+    category: _selectedCategory));
+
+# 팝업창
+쓰기 위해 import 'package:flutter/cupertino.dart' 이거를 임포트 해야한다
+
+ios와 android로 나뉨
+if (Platform.isIOS) {
+  showCupertinoDialog()
+} else {
+  showDialog()}
+
+# ios인지 안드로인지 아는 방법
+Platform.isIOS
+
+# 핸드폰의 넓이, 높이 아는 방법
+LayoutBuilder를 선언해야 쓸수있다
+constraints가 바뀔때마다 실행이 된다
+
+return LayoutBuilder(builder: (ctx, constraints) {
+print(constraints.minWidth); // 세로: 0.0 / 가로 : 0
+print(constraints.maxWidth); // 세로: 430.0 / 가로 : 640
+print(constraints.minHeight); // 세로: 0.0 / 가로: 0
+print(constraints.maxHeight); // 세로: 873.0 / 가로 430
+
+이것을 사용하는 방법
+child: Column(
+  children: [
+    if (width >= 600)
+      // width > 600일때 실행됨
+      Row(
+        
+# 키보드 밑에 화면을 스크롤링 되게 하기!
+1. 키보드의 높이를 구하는 방법
+final keyboardSpace = MediaQuery.of(context).viewInsets.bottom;
+
+2. SingleChildScrollView로 감싼다
+SingleChildScrollView는 자식 위젯이 필요한 만큼만 공간을 차지하도록 동작한다. 그렇기 때문에 height: double.infinity,를 적용해야 한다
+키보드가 올라와도 입력 필드를 가리지 않고 스크롤해서 볼 수 있게 해줌
+ex)
+@override
+Widget build(BuildContext context) {
+  final keyboardSpace = MediaQuery.of(context).viewInsets.bottom;
+
+  return LayoutBuilder(builder: (ctx, constraints) {
+    final width = constraints.maxWidth;
+    final height = constraints.maxHeight;
+
+    return SizedBox(
+      height: double.infinity,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(16, 48, 16, keyboardSpace + 16),
+
+# Expanded
+Expanded는 Row, Column, Flex 내부에서 가용 공간을 최대한 차지하도록 함.
+Expanded를 사용하지 않으면 Row 내부에서 크기 문제로 UI가 깨질 수 있음.
+
+# 날짜 선택하는 위젯
+
+Expanded(
+  child: Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(_selectedDate == null
+            ? 'Selected Date'
+            : formatter.format(_selectedDate!)),
+        // 무조건 null이 아니기에 !를 추가함
+        IconButton(
+            onPressed: _presentDatePicker,
+            icon: const Icon(Icons.calendar_month))
+      ]),
+)
+
+달력이 열리는 함수
+여기서 context는 NewExpense 위젯의 컨텍스트를 의미한다
+  void _presentDatePicker() async {
+    final now = DateTime.now();
+    final firstDate = DateTime(now.year - 1, now.month, now.day);
+    final pickedDate = await showDatePicker(
+        context: context,
+        initialDate: now,
+        firstDate: firstDate,
+        lastDate: now);
+
+    setState(() {
+      _selectedDate = pickedDate;
+    });
+  }
+
+# 날짜 포맷터 쓰기
+날짜를 "연/월/일 (Year/Month/Day)" 형식으로 변환하는 formatter를 생성한다
+다운로드: 설치방법: flutter pub add intl
+예제)
+import 'package:intl/intl.dart'; // intl 패키지를 임포트해야 함
+void main() {
+  final formatter = DateFormat.yMd(); // yMd() 형식 (예: 2024/3/8)
+  DateTime now = DateTime.now(); // 현재 날짜
+  String formattedDate = formatter.format(now); // 날짜를 문자열로 변환
+  print(formattedDate); // 예: "3/8/2024" (디바이스 로캘에 따라 다름)
+}
+
+# 날짜 selectbox에서 없을수도 있는 날짜를 받는 방법
+1. 변수 선언
+  DateTime? _selectedDate;
+2. 사용부 :에서는 변수 뒤에 !를 붙인다 
+  Text(_selectedDate == null
+      ? 'Selected Date'
+      : formatter.format(_selectedDate!)),
+
+# 드롭다운 사용하기
+  DropdownButton(
+      value: _selectedCategory,
+      items: Category.values
+          .map((category) => DropdownMenuItem(
+              value: category,
+              child: Text(category.name.toUpperCase())))
+          .toList(),
+      onChanged: (value) {
+        setState(() {
+          if (value == null) {
+            return;
+          }
+          setState(() {
+            _selectedCategory = value;
+          });
+        });
+      }),
+카테고리 변수는 아래와 같음
+enum Category { food, travel, leisure, work }
+
+# enum
+enum Category { food, travel, leisure, work }
+
+# 클래스를 정의
+객체(인스턴스)를 만들 때 사용된다
+ex)
+class Expense {
+  Expense(
+      {required this.title,
+      required this.amount,
+      required this.date,
+      required this.category})
+      : id = uuid.v4();
+
+  final String id;
+  final String title;
+  final double amount;
+  final DateTime date;
+  final Category category;
+
+  get formattedDate {
+    return formatter.format(date);
+  }
+}
+
+  Expense 생성자로 Expense 객체를 만들 때 4개의 데이터를 필수로 받아야 함:
+    title (지출 이름)
+    amount (금액)
+    date (날짜)
+    category (카테고리)
+  
+  : id = uuid.v4();
+  id는 외부에서 받지 않고 자동으로 생성됨
+  uuid.v4()를 사용해 고유한 ID(UUID) 를 생성
+
+  final 키워드를 사용해서 변경할 수 없는 데이터(불변 데이터)를 선언하여 Expense 객체가 생성될 때 값이 설정되고, 이후 변경되지 않는다
+
+  formattedDate는 getter이다
+  사용방법:
+  print("Expense Date (formatted): ${myExpense.formattedDate}"); 
+  formattedDate의 값은 인스턴스를 만들 때 넣은 date 값이 있기 때문에 getter에서 반환할 수 있다.
+
+
+# 하나의 파일에 두 개의 클래스를 정의
+class Expense {
+
+} 밑에
+class ExpenseBucket {
+
+}이 선언되어있다. 
+
+같은 파일에 등록이 되어있는 이유는 Expense개수만큼
+ExpenseBucket가 생기기 때문이다. 
+
+# 이름있는 생성자(Named Constructor)
+ExpenseBucket.forCategory가 이름있는 생성자이고 forCategory가 그 이름이다
+역할: 특정 카테고리의 Expense만 필터링해서 생성한다
+
+ex)
+class ExpenseBucket {
+  const ExpenseBucket({required this.category, required this.expenses});
+  ExpenseBucket.forCategory(List<Expense> allExpenses, this.category)
+      : expenses = allExpenses
+            .where((expense) => expense.category == category)
+            .toList();
+
+사용: 
+ExpenseBucket.forCategory(expenses, Category.food),
+
+.toList() 쓰는 이유:
+  ➡ where()는 Iterable<Expense>을 반환합니다.
+  ➡ 하지만 expenses 변수는 List<Expense> 타입입니다.
+  ➡ 그래서 Iterable을 List로 변환하기 위해 .toList()를 사용한 것이다
+
+# 세로 모드만 가능하도록 바꾸기
+void main() {
+  WidgetsFlutterBinding
+      .ensureInitialized(); // setPreferredOrientations 하기전에 바인딩 시켜줘야 한다
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp, // 세로 모드만 가능하도록
+  ]).then((fn) {
+    runApp(const MyApp()); // 그리고 then안에 runApp을 넣는다
+  });
+}
+
+# 리버팟
+임포트: 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
