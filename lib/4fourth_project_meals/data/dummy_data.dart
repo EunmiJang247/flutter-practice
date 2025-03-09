@@ -1,5 +1,5 @@
-import 'package:first_app/4fourth_project/models/category.dart';
-import 'package:first_app/4fourth_project/models/meal.dart';
+import 'package:first_app/4fourth_project_meals/models/category.dart';
+import 'package:first_app/4fourth_project_meals/models/meal.dart';
 import 'package:flutter/material.dart';
 
 const availableCategories = [

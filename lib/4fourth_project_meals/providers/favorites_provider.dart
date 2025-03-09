@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:first_app/4fourth_project/models/meal.dart';
+import 'package:first_app/4fourth_project_meals/models/meal.dart';
 
 class FavoriteMealsNotifier extends StateNotifier<List<Meal>> {
   // 리버팟에서 제공하는 StateNotifier 이다

@@ -1,6 +1,6 @@
-import 'package:first_app/4fourth_project/models/meal.dart';
-import 'package:first_app/4fourth_project/screens/meal_details.dart';
-import 'package:first_app/4fourth_project/widgets/meal_item.dart';
+import 'package:first_app/4fourth_project_meals/models/meal.dart';
+import 'package:first_app/4fourth_project_meals/screens/meal_details.dart';
+import 'package:first_app/4fourth_project_meals/widgets/meal_item.dart';
 import 'package:flutter/material.dart';
 
 class MealsScreen extends StatelessWidget {
@@ -44,7 +44,6 @@ class MealsScreen extends StatelessWidget {
       );
     } else {
       content = ListView.builder(
-          // 몇개인지 여기 꼭 써줘야 에러가 안난다
           itemCount: meals.length,
           itemBuilder: (ctx, index) => MealItem(
               meal: meals[index],

@@ -1,8 +1,8 @@
-import 'package:first_app/4fourth_project/screens/firstpage_categories.dart';
-import 'package:first_app/4fourth_project/screens/tabs.dart';
+import 'package:first_app/4fourth_project_meals/screens/firstpage_categories.dart';
+import 'package:first_app/4fourth_project_meals/screens/tabs.dart';
 import 'package:flutter/material.dart';
-import 'package:first_app/1first_project/gradient_container.dart';
-import 'package:first_app/2second_project/quiz.dart';
+import 'package:first_app/1first_project_dice_roller/gradient_container.dart';
+import 'package:first_app/2second_project_quiz/quiz.dart';
 import 'package:first_app/3third_project_wallet/firstpage.dart';
 
 import 'package:flutter/services.dart'; // 세로모드만 가능하도록 고정하는 패키지
@@ -157,10 +157,13 @@ final theme = ThemeData(
     brightness: Brightness.dark,
     seedColor: const Color.fromARGB(255, 131, 57, 0),
   ),
-  textTheme: GoogleFonts.latoTextTheme(),
+  textTheme: GoogleFonts.latoTextTheme().copyWith(
+    titleSmall: GoogleFonts.latoTextTheme().titleSmall?.copyWith(
+          fontSize: 14,
+        ),
+  ),
 );
 void main() {
-  // 프로바이더를 사용하기 위해 아래와 같이 ProviderScope로 감싸야 한다
   runApp(const ProviderScope(
     child: App(),
   ));

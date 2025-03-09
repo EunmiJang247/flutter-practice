@@ -657,7 +657,463 @@ void main() {
   });
 }
 
-# 리버팟
+// 4. 네번째 프로젝트
+
+# 리버팟 사용(StatefulWidget 일때)
 임포트: 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+1. Riverpod을 사용하려면 ProviderScope로 앱을 감싸야한다
+ex)
+import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+void main() {
+  runApp(const ProviderScope(
+    child: App(),
+  ));
+}
+
+2. provider를 선언한다
+
+dummyMeals는 다음과 같은 배열이다
+const dummyMeals = [
+//   Meal(),
+//   Meal(),
+//   Meal(),
+// ]
+
+import 'package:first_app/4fourth_project/data/dummy_data.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+final mealsProvider = Provider((ref) {
+  return dummyMeals;
+});
+
+리턴으로 dummyMeals를 반환해준다 
+
+3. ref.watch()로 쓴다
+프로바이더 임포트
+import 'package:first_app/4fourth_project/providers/meals_provider.dart';
+
+final filteredMealsProvider = Provider((ref) {
+  final meals = ref.watch(mealsProvider);
+
+ref.watch는 Provider가 관리하는 상태를 "구독"하는 함수이다. 
+특정 Provider의 값을 계속 감시(watch)하고, 그 값이 변경되면 자동으로 다시 빌드되게 만든다. 
+즉, mealsProvider의 값이 바뀌면 자동으로 filteredMealsProvider 도 다시 계산됨
+
+4. StatefulWidget 대신 ConsumerStatefulWidget를 써야함
+class TabsScreen extends ConsumerStatefulWidget {
+  const TabsScreen({super.key});
+
+5. createState 를 ConsumerState로 변경한다
+State<TabsScreen> createState() { => 
+ConsumerState<TabsScreen> createState() {
+
+
+6. State를 ConsumerState로 바꾼다
+class _TabsScreenState extends State<TabsScreen> { 
+-> class _TabsScreenState extends ConsumerState<TabsScreen> {
+
+
+# 리버팟 사용(StatelessWidget 일때)
+임포트: 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+1. Riverpod을 사용하려면 ProviderScope로 앱을 감싸야한다
+ex)
+import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+void main() {
+  runApp(const ProviderScope(
+    child: App(),
+  ));
+}
+
+2. provider를 선언한다
+import 'package:first_app/4fourth_project/providers/filters_provider.dart';
+
+3. StatelessWidget 대신 ConsumerWidget를 써야함
+class TabsScreen extends ConsumerStatefulWidget {
+  const TabsScreen({super.key});
+
+4. Widget build 부분을 선언한다
+WidgetRef ref은 ConsumerWidget으로 변경했기 때문에 써야한다
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+
+5. ref.watch()로 쓴다
+  final activeFilters = ref.watch(filtersProvider);
+
+6. 상태를 변경하는 메서드를 사용한다.
+filtersProvider의 상태를 변경할 수 있도록 filtersProvider.notifier를
+사용해서 FilterNotifier(클래스 이름임) 인스턴스를 가져오는 것
+ex)
+  SwitchListTile(
+    value: activeFilters[Filter.glutenFree]!,
+    onChanged: (isChecked) {
+      ref
+          .read(filtersProvider.notifier)
+          .setFilter(Filter.glutenFree, isChecked);
+    },
+
+7. 상태를 변경하는 메서드인 setFilters는 프로바이더에 있다
+ex)
+  class FilterNotifier extends StateNotifier<Map<Filter, bool>> {
+    FilterNotifier();
+    void setFilters(Map<Filter, bool> chosenFilters) {
+      state = chosenFilters;
+    }
+
+
+# 밑에 탭바를 만들기
+카테고리와 즐겨찾기 두개의 탭바가 있다
+ex)
+  bottomNavigationBar: BottomNavigationBar(
+    onTap: _selectPage,
+    currentIndex: _selectedPageIndex,
+    items: const [
+      BottomNavigationBarItem(
+          icon: Icon(Icons.set_meal), label: 'Categories'),
+      BottomNavigationBarItem(icon: Icon(Icons.star), label: 'Favorites'),
+    ],
+  ),
+
+# 드로어 만들기
+1. tabs안에 drawer를 만든다
+ex)
+  return Scaffold(
+    appBar: AppBar(title: Text(activePageTitle)),
+    drawer: MainDrawer(
+      onSelectScreen: _setScreen,
+    ),
+
+2. Drawer 위젯을 만든다
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: Column(
+        children: [
+          DrawerHeader(
+
+# 화면을 아래에서 위로 올라오는 애니메이션 (animation) 을 추가하기
+1. Stateless -> StatefulWidget 로 바꿔야 한다
+2. SingleTickerProviderStateMixin로 감싼다
+3. initState를 추가한다 
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this, // ✅ TickerProviderStateMixin을 사용해서 vsync 설정
+      duration: Duration(milliseconds: 300),
+      lowerBound: 0, // 애니메이션의 최소값 (기본값: 0)
+      upperBound: 1, // 애니메이션의 최대값 (기본값: 1)
+    );
+    _animationController.forward();
+  }
+  vsync: 애니메이션 리소스 최적화
+  duration: 애니메이션 지속 시간 300ms
+  lowerBound: 애니메이션 최소 값
+  upperBound: 애니메이션 최대 값
+  _animationController.forward(); // 애니메이션 실행 (0 -> 1)
+
+4. controller를 선언한다
+  late AnimationController _animationController;
+5. 메모리 누수를 방지하기 위해 dispose()에서 에니메이션을 정리
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+6. animation을 AnimatedBuilder에 선언한다
+ex)
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animationController,
+      child: GridView(
+
+7. builder는 애니메이션 값이 변경될 때마다 다시 실행된다
+Tween은 애니메이션의 시작과 끝 값을 정하는 역할이다.
+
+return AnimatedBuilder(
+  animation: _animationController, // 애니메이션 컨트롤러
+  child: GridView( ... ), // 이미 그리드뷰가 있음
+  builder: (context, child) => SlideTransition( // child를 감싸서 애니메이션 적용
+    position: Tween(
+      begin: const Offset(0, 0.3), // 처음 위치 (아래에서 시작)
+      //  y축 기준으로 아래쪽 30% 위치에서 시작
+      end: const Offset(0, 0), // 최종 위치 (제자리)
+    ).animate(CurvedAnimation(
+        parent: _animationController, curve: Curves.easeInOut)), // 부드럽게 이동
+    child: child, // 여기서 child는 위의 GridView
+  ),
+);
+
+# Navigator.of(context).pushReplacement와 Navigator.of(context).push의 차이점
+🔹 Navigator.of(context).push(): 
+1. 새로운 화면을 **스택(Stack)**에 추가하여 이전 화면을 유지
+2. 사용자가 뒤로 가기 버튼을 누르면 이전 화면으로 돌아갈 수 있음
+3. push()를 계속 호출하면 화면이 계속 쌓이게 됨.
+
+🔹 Navigator.of(context).pushReplacement()
+1. 새로운 화면을 열면서 이전 화면을 스택에서 제거합니다.
+2. 사용자가 뒤로 가기 버튼을 눌러도 이전 화면으로 돌아갈 수 없음.
+3. 기존 화면을 대체하는 방식이므로, 메모리 관리 측면에서 유리할 수 있음.
+
+
+# PopScope으로 뒤로가기 시 데이터 이전 screen으로 보내기
+Column을 PopScope로 감싸서 사용자가 뒤로 가기를 눌렀을 때
+특정 로직을 실행할 수 있도록 한다
+Navigator.of(context).pop(newFilters) -> 에서
+뒤로가기를 하며 newFilters를 이전 화면으로 돌려준다
+
+ex)
+  body: PopScope(
+    canPop: false,
+    onPopInvokedWithResult: (bool didPop, dynamic result) {
+      if (didPop) return; // -> 사용자가 이미 pop을 수행했다면 아무것도 하지 않음
+      // 상태 관리 로직 실행 (필터 저장)
+      final newFilters = {
+        Filter.glutenFree: _glutenFreeFilterSet,
+        Filter.lactoseFree: _lactoseFreeFilterSet,
+        Filter.vegetarian: _vegetarianFilterSet,
+        Filter.vegan: _veganFilterSet,
+      };
+      ref.read(filtersProvider.notifier).setFilters(newFilters);
+      // 현재 화면을 닫고 데이터 반환
+      Navigator.of(context).pop(newFilters);
+    },
+
+이렇게 보내면 그 전스크린(TabsScreen)의 _setScreen에서 await을 사용해서 데이터를 받는다
+result라는 변수로 받아서 출력하는 코드이다
+ex)
+  void _setScreen(String identifier) async {
+    Navigator.of(context).pop();
+    if (identifier == 'filters') {
+      final result = await Navigator.of(context).push<Map<Filter, bool>>(
+        MaterialPageRoute(
+          builder: (ctx) => const FiltersScreen(),
+        ),
+      );
+
+      if (result != null) {
+        print('받은 필터 데이터: $result'); // 콘솔 출력
+      }
+    }
+  }
+
+# 토글버튼 만들기
+SwitchListTile 를 사용해서 만든다
+ex)
+  SwitchListTile(
+    value: activeFilters[Filter.glutenFree]!,
+    onChanged: (isChecked) {
+      ref
+          .read(filtersProvider.notifier)
+          .setFilter(Filter.glutenFree, isChecked);
+    },
+    title: Text(
+      'Gluten-free',
+      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+            color: Theme.of(context).colorScheme.onBackground,
+          ),
+    ),
+    subtitle: Text(
+      'Only include gluten-free meals.',
+      style: Theme.of(context).textTheme.labelMedium!.copyWith(
+            color: Theme.of(context).colorScheme.onBackground,
+          ),
+    ),
+    activeColor: Theme.of(context).colorScheme.tertiary,
+    contentPadding: const EdgeInsets.only(left: 34, right: 22),
+  ),
+
+# StateNotifier의 의미
+notifier: 프로바이더의 상태를 변경하는 것이다
+Riverpod에서 "상태 변경이 필요한 경우" 사용된다. 
+Provider를 상속하여 프로바이더를 선언하면 읽기만 가능하고 
+StateNotifier를 상속받아 프로바이더를 선언하면 변경이 가능하다
+
+아래의 경우 <Map<Filter, bool>>을 상속받아 Riverpod에서 필터 상태를 관리하는 클래스이다. 
+초기 값은 super뒤에 선언하는 것이다
+
+ex)
+class FilterNotifier extends StateNotifier<Map<Filter, bool>> {
+  FilterNotifier()
+      : super({
+          Filter.glutenFree: false,
+          Filter.lactoseFree: false,
+          Filter.vegetarian: false,
+          Filter.vegan: false,
+        });
+
+# StateNotifierProvider 의 의미
+📌 StateNotifierProvider<T, S>란 T는 상태를 관리하는 클래스 (StateNotifier), 
+S는 실제 상태값의 타입이다. 
+
+아래와 같이 선언하면 filtersProvider는 전역적으로 필터 상태를 관리하는 프로바이더 역할을 함.
+즉, filtersProvider를 통해 UI에서 필터 상태를 읽고(watch), 변경(notifier)할 수 있음.
+ex)
+final filtersProvider =
+    StateNotifierProvider<FilterNotifier, Map<Filter, bool>>(
+        (ref) => FilterNotifier());
+
+그리고 사용은
+ex)
+final filteredMealsProvider = Provider((ref) {
+  final meals = ref.watch(mealsProvider);
+  final activeFilters = ref.watch(filtersProvider);
+  return meals.where((meal) {
+    if (activeFilters[Filter.glutenFree]! && !meal.isGlutenFree) {
+      return false;
+    }
+    if (activeFilters[Filter.lactoseFree]! && !meal.isLactoseFree) {
+      return false;
+    }
+    if (activeFilters[Filter.vegetarian]! && !meal.isVegetarian) {
+      return false;
+    }
+    if (activeFilters[Filter.vegan]! && !meal.isVegan) {
+      return false;
+    }
+    return true;
+  }).toList();
+});
+
+이 filteredMealsProvider는 다른 파일에서 아래와 같이 쓰인다.
+ex)
+ @override
+  Widget build(BuildContext context) {
+    final availableMeals = ref.watch(filteredMealsProvider);
+
+# InkWell
+tap을 가능하게 하는 위젯이다
+ex)
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onSelectCategory,
+      splashColor: Theme.of(context).primaryColor,
+      borderRadius: BorderRadius.circular(16),
+
+
+# Text 위젯에서 두줄 이상 넘어가면 잘라내고 ...처리하기
+ex)
+  children: [
+    Text(
+      meal.title,
+      maxLines: 2,
+      textAlign: TextAlign.center,
+      softWrap: true,
+      overflow: TextOverflow.ellipsis,
+      style: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Colors.white),
+    ),
+
+# 인터넷에서 가져온 이미지를 보여주기
+art pub add transparent_image해서 설치한다
+NetworkImage: 인터넷에서 사진을 불러온다
+
+ex)
+  FadeInImage(
+    placeholder: MemoryImage(kTransparentImage),
+    image: NetworkImage(meal.imageUrl),
+    // dart pub add transparent_image해서 설치한다
+    // NetworkImage: 인터넷에서 사진을 불러온다
+    fit: BoxFit.cover,
+    height: 200,
+    width: double.infinity,
+  ),
+
+# 카드 모양 둥글게 하고 이상 되는거는 자르기
+Card(
+  margin: const EdgeInsets.all(8),
+  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+  clipBehavior: Clip.hardEdge,
+  elevation: 2,
+  child: InkWell(
+    ...
+
+# Implicit Animations 적용하기
+AnimatedSwitcher 위젯을 사용하면 된다.
+한 위젯에서 다른 위젯으로 변경될 때 애니메이션을 제공함.
+AnimatedSwitcher로 감싸고 나서 transitionBuilder에 어떤 애니메이션을
+줄지 선언한다
+
+ex)
+이렇게만 쓰면 애니메이션이 적용되지 않는다. 왜냐면 Icon은 한번만 선언되었고 그안에서 
+isFavorite ? Icons.star : Icons.star_border가 되는것뿐이기 때문이다. 
+ex)
+  icon: AnimatedSwitcher(
+    duration: const Duration(milliseconds: 300),
+    transitionBuilder: (){},
+    child: Icon(isFavorite ? Icons.star : Icons.star_border),
+  ),
+
+그래서 key를 추가해주어야 한다. 
+이전과 다른 위젯임을 알려주기 위해. 
+ex)
+  icon: AnimatedSwitcher(
+    duration: const Duration(milliseconds: 300),
+    transitionBuilder: (child, animation) {
+      return RotationTransition(
+        turns: animation,
+        child: child,
+      );
+    },
+    child: Icon(
+      isFavorite ? Icons.star : Icons.star_border,
+      key: ValueKey(isFavorite),
+    ),
+  ),
+Tween을 사용할수도 있다.
+ex)
+  icon: AnimatedSwitcher(
+    duration: const Duration(milliseconds: 300),
+    transitionBuilder: (child, animation) {
+      return RotationTransition(
+        turns:
+            Tween<double>(begin: 0.8, end: 1.0).animate(animation),
+        child: child,
+      );
+    },
+    child: Icon(
+      isFavorite ? Icons.star : Icons.star_border,
+      key: ValueKey(isFavorite),
+    ),
+  ),
+
+# 리스트 -> 디테일 페이지로 이동할 때 같은 사진이라면 이동되는 애니메이션 주기
+1. list에서 대표사진 부분을 Hero 위젯으로 감싼다
+ex)
+  Hero(
+    tag: meal.id,
+    child: FadeInImage(
+      placeholder: MemoryImage(kTransparentImage),
+      image: NetworkImage(meal.imageUrl),
+      fit: BoxFit.cover,
+      height: 200,
+      width: double.infinity,
+    ),
+  ),
+
+2. detail에서 대표 사진 부분을 또 Hero 위젯으로 감싼다
+ex)
+  body: SingleChildScrollView(
+    child: Column(
+      children: [
+        Hero(
+          tag: meal.id,
+          child: Image.network(
+            meal.imageUrl,
+            height: 300,
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
+        ),
+
+
 
