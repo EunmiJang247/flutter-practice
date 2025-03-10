@@ -2,6 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>위치 제공하세요</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>이미지를 고르세요</string>
+	<key>NSCameraUsageDescription</key>
+	<string>왜 카메라가 필요한지</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>마이크 권한</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

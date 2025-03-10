@@ -1115,5 +1115,21 @@ ex)
           ),
         ),
 
+# location 관련 에러 해결방법
+If that should be the case, try editing your android/settings.gradle file and make sure the following line:
+
+id "org.jetbrains.kotlin.android" version "1.9.21" apply false
+reflects your current Kotlin version (you find that version in the build.gradle file).
+
+Also see this Q&A thread (and the threads linked in there) for further context: https://www.udemy.com/course/learn-flutter-dart-to-build-ios-android-apps/learn/lecture/37130520#questions/21453790/
+
+# Location 
+1. 패키지 추가하기
+flutter pub add location
+2. Ios의 경우 Info.plist에서 
+<key>NSLocationWhenInUseUsageDescription</key> 추가했음.
+3. 
+
+
 
 

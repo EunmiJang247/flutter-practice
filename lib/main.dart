@@ -1,11 +1,14 @@
 import 'package:first_app/4fourth_project_meals/screens/firstpage_categories.dart';
 import 'package:first_app/4fourth_project_meals/screens/tabs.dart';
+import 'package:first_app/5fifth_project_shopping/screens/firstpage_grocery_list.dart';
+import 'package:first_app/6sixth_project_favorite_places/screens/firstpage_place_list.dart';
 import 'package:flutter/material.dart';
 import 'package:first_app/1first_project_dice_roller/gradient_container.dart';
 import 'package:first_app/2second_project_quiz/quiz.dart';
 import 'package:first_app/3third_project_wallet/firstpage.dart';
 
 import 'package:flutter/services.dart'; // 세로모드만 가능하도록 고정하는 패키지
+import 'package:google_fonts/google_fonts.dart';
 
 // // 첫번째 프로젝트
 // void main() {
@@ -148,25 +151,99 @@ import 'package:flutter/services.dart'; // 세로모드만 가능하도록 고�
 // }
 
 // 네번째 프로젝트
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
+// import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// final theme = ThemeData(
+//   useMaterial3: true,
+//   colorScheme: ColorScheme.fromSeed(
+//     brightness: Brightness.dark,
+//     seedColor: const Color.fromARGB(255, 131, 57, 0),
+//   ),
+//   textTheme: GoogleFonts.latoTextTheme().copyWith(
+//     titleSmall: GoogleFonts.latoTextTheme().titleSmall?.copyWith(
+//           fontSize: 14,
+//         ),
+//   ),
+// );
+// void main() {
+//   runApp(const ProviderScope(
+//     child: App(),
+//   ));
+// }
+
+// class App extends StatelessWidget {
+//   const App({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       theme: theme,
+//       home: TabsScreen(),
+//     );
+//   }
+// }
+
+// 다섯번째 프로젝트
+// void main() {
+//   runApp(const MyApp());
+// }
+
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+
+//   // This widget is the root of your application.
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'Flutter Groceries',
+//       theme: ThemeData.dark().copyWith(
+//         colorScheme: ColorScheme.fromSeed(
+//           seedColor: const Color.fromARGB(255, 147, 229, 250),
+//           brightness: Brightness.dark,
+//           surface: const Color.fromARGB(255, 42, 51, 59),
+//           // 앱바 배경색
+//         ),
+//         scaffoldBackgroundColor: const Color.fromARGB(255, 50, 58, 60),
+//         // 스크린 배경색
+//       ),
+//       home: GroceryList(),
+//     );
+//   }
+// }
+
+// 여섯번째 프로젝트
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final theme = ThemeData(
-  useMaterial3: true,
-  colorScheme: ColorScheme.fromSeed(
-    brightness: Brightness.dark,
-    seedColor: const Color.fromARGB(255, 131, 57, 0),
-  ),
-  textTheme: GoogleFonts.latoTextTheme().copyWith(
-    titleSmall: GoogleFonts.latoTextTheme().titleSmall?.copyWith(
-          fontSize: 14,
-        ),
+final colorScheme = ColorScheme.fromSeed(
+  brightness: Brightness.dark,
+  seedColor: const Color.fromARGB(255, 102, 6, 247),
+  background: const Color.fromARGB(255, 56, 49, 66),
+);
+
+final theme = ThemeData().copyWith(
+  scaffoldBackgroundColor: colorScheme.background,
+  colorScheme: colorScheme,
+  textTheme: GoogleFonts.ubuntuCondensedTextTheme().copyWith(
+    titleSmall: GoogleFonts.ubuntuCondensed(
+      fontWeight: FontWeight.bold,
+      color: Colors.white,
+    ),
+    titleMedium: GoogleFonts.ubuntuCondensed(
+      fontWeight: FontWeight.bold,
+      color: Colors.white,
+    ),
+    titleLarge: GoogleFonts.ubuntuCondensed(
+      fontWeight: FontWeight.bold,
+      color: Colors.white,
+    ),
   ),
 );
+
 void main() {
-  runApp(const ProviderScope(
-    child: App(),
-  ));
+  runApp(
+    const ProviderScope(child: App()),
+  );
 }
 
 class App extends StatelessWidget {
@@ -175,8 +252,9 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Great Places',
       theme: theme,
-      home: TabsScreen(),
+      home: const PlacesScreen(),
     );
   }
 }
