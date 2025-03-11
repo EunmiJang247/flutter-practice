@@ -4,6 +4,8 @@
 <dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>위치 제공하세요</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>백그라운드에서 위치 정보를 사용합니다.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>이미지를 고르세요</string>
 	<key>NSCameraUsageDescription</key>

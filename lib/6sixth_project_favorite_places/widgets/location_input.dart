@@ -1,8 +1,13 @@
+import 'package:first_app/6sixth_project_favorite_places/models/place.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert'; // PlaceLocation 타입 쓰려면 필요!
 
 class LocationInput extends StatefulWidget {
-  const LocationInput({super.key});
+  const LocationInput({super.key, required this.onSelectLocation});
+
+  final void Function(PlaceLocation location) onSelectLocation;
 
   @override
   State<StatefulWidget> createState() {
@@ -14,11 +19,23 @@ class _LocationInputState extends State<LocationInput> {
   // flutter pub add location 로 패키지 추가함
   // https://pub.dev/packages/location 여기서 가져온 코드를 붙여다넣음
   // async 를 붙임
-  Location? _pickedLocation;
+  PlaceLocation? _pickedLocation;
   var _isGettingLocation = false;
 
+  // 게터 설정
+  // get이란 뭘까.. 왜 변수설정으로 하지 않는걸까
+  String get locationImage {
+    if (_pickedLocation == null) {
+      return '';
+    }
+
+    final lat = _pickedLocation!.latitue;
+    final lng = _pickedLocation!.longtitude;
+
+    return 'https://maps.googleapis.com/maps/api/staticmap?center=$lat,$lng&zoom=16&size=600x400&maptype=roadmap&markers=color:red%7Clabel:A%7C$lat,$lng&key=AIzaSyDLuI361e6q0PXtUKfxPY0YGCYDYHYZKWY';
+  }
+
   void _getCurrentLocation() async {
-    print('위치 가져오는 버튼 클릭');
     Location location = Location();
 
     bool serviceEnabled;
@@ -29,6 +46,7 @@ class _LocationInputState extends State<LocationInput> {
     if (!serviceEnabled) {
       serviceEnabled = await location.requestService();
       if (!serviceEnabled) {
+        print('위치 서비스가 비활성화됨');
         return;
       }
     }
@@ -37,18 +55,47 @@ class _LocationInputState extends State<LocationInput> {
     if (permissionGranted == PermissionStatus.denied) {
       permissionGranted = await location.requestPermission();
       if (permissionGranted != PermissionStatus.granted) {
+        print('위치 권한이 거부됨');
         return;
       }
     }
     setState(() {
       _isGettingLocation = true;
     });
-    locationData = await location.getLocation();
-    setState(() {
-      _isGettingLocation = false;
-    });
-    print(locationData.latitude);
-    print(locationData.longitude);
+    try {
+      locationData = await location.getLocation();
+
+      print(locationData.latitude);
+      print(locationData.longitude);
+
+      final lat = locationData.latitude;
+      final lng = locationData.longitude;
+
+      if (lat == null || lng == null) {
+        return;
+      }
+
+      // 위도와 경도로 주소를 뽑아내는 api 호출하기
+      final url = Uri.parse(
+          'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=AIzaSyDLuI361e6q0PXtUKfxPY0YGCYDYHYZKWY');
+
+      final response = await http.get(url);
+      final resData = json.decode(response.body);
+      final address = resData['results'][0]['formatted_address'];
+      print(address);
+
+      setState(() {
+        _pickedLocation =
+            PlaceLocation(latitue: lat, longtitude: lng, address: address);
+        _isGettingLocation = false;
+      });
+      widget.onSelectLocation(_pickedLocation!);
+    } catch (e) {
+      print('위치 가져오기 실패: $e');
+      setState(() {
+        _isGettingLocation = false;
+      });
+    }
   }
 
   @override
@@ -60,6 +107,15 @@ class _LocationInputState extends State<LocationInput> {
             color: Theme.of(context).colorScheme.onBackground,
           ),
     );
+
+    if (_pickedLocation != null) {
+      previewContent = Image.network(
+        locationImage,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+      );
+    }
 
     if (_isGettingLocation) {
       previewContent = const CircularProgressIndicator();

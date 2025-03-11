@@ -212,7 +212,7 @@ import 'package:google_fonts/google_fonts.dart';
 //   }
 // }
 
-// 여섯번째 프로젝트
+// 여섯번째 프로젝트_지도앱
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final colorScheme = ColorScheme.fromSeed(

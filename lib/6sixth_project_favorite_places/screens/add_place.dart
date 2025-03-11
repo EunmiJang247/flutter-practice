@@ -18,6 +18,7 @@ class AddPlaceScreen extends ConsumerStatefulWidget {
 class _NewItemState extends ConsumerState<AddPlaceScreen> {
   final _formKey = GlobalKey<FormState>();
   File? _selectedImage;
+  PlaceLocation? _selectedLocation;
 
   var _enteredTitle = '';
   var _isSending = false;
@@ -30,13 +31,18 @@ class _NewItemState extends ConsumerState<AddPlaceScreen> {
     }
     _formKey.currentState!.save();
 
-    if (_selectedImage == null) {
+    if (_enteredTitle.isEmpty ||
+        _selectedImage == null ||
+        _selectedLocation == null) {
+      setState(() {
+        _isSending = false;
+      });
       return;
     }
     print(_selectedImage);
     ref
         .read(userPlacesProvider.notifier)
-        .addPlace(_enteredTitle, _selectedImage!);
+        .addPlace(_enteredTitle, _selectedImage!, _selectedLocation!);
 
     setState(() {
       _isSending = false;
@@ -82,12 +88,14 @@ class _NewItemState extends ConsumerState<AddPlaceScreen> {
                   // 이미지 인풋을 넣을 것이다
                   ImageInput(onPickImage: (image) {
                     _selectedImage = image;
-                    // 여기서 최종적으로 이미즐 받은 것이다
+                    // 여기서 최종적으로 이미지를 받은 것이다
                   }),
                   const SizedBox(
                     height: 16,
                   ),
-                  LocationInput(),
+                  LocationInput(onSelectLocation: (location) {
+                    _selectedLocation = location;
+                  }),
                   const SizedBox(
                     height: 16,
                   ),

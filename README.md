@@ -1128,8 +1128,10 @@ Also see this Q&A thread (and the threads linked in there) for further context: 
 flutter pub add location
 2. Ios의 경우 Info.plist에서 
 <key>NSLocationWhenInUseUsageDescription</key> 추가했음.
-3. 
-
-
+3. 내 구글맵 API KEY: AIzaSyDLuI361e6q0PXtUKfxPY0YGCYDYHYZKWY
+4. 지오코딩: 위도, 경도를 사람에게 의미있는 주소로 변경하는 것
+참조:
+https://developers.google.com/maps/documentation/geocoding/requests-reverse-geocoding?hl=ko
+5. 
 
 
