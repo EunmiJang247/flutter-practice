@@ -1,4 +1,5 @@
 import 'package:first_app/6sixth_project_favorite_places/models/place.dart';
+import 'package:first_app/6sixth_project_favorite_places/screens/map.dart';
 import 'package:flutter/material.dart';
 
 class PlaceDetailSceen extends StatelessWidget {
@@ -7,8 +8,8 @@ class PlaceDetailSceen extends StatelessWidget {
   final Place place;
 
   String get locationImage {
-    final lat = place.location.latitue;
-    final lng = place.location.longtitude;
+    final lat = place.location.latitude;
+    final lng = place.location.longitude;
     return 'https://maps.googleapis.com/maps/api/staticmap?center=$lat,$lng&zoom=16&size=600x400&maptype=roadmap&markers=color:red%7Clabel:A%7C$lat,$lng&key=AIzaSyDLuI361e6q0PXtUKfxPY0YGCYDYHYZKWY';
   }
 
@@ -32,9 +33,20 @@ class PlaceDetailSceen extends StatelessWidget {
             right: 0,
             child: Column(
               children: [
-                CircleAvatar(
-                  radius: 70,
-                  backgroundImage: NetworkImage(locationImage),
+                GestureDetector(
+                  // 온탭을 하기위해서 GestureDetector로 감쌌음
+                  onTap: () {
+                    // 맵스크린을 열겠다
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (ctx) => MapScreen(
+                              location: place.location,
+                              isSelecting: false,
+                            )));
+                  },
+                  child: CircleAvatar(
+                    radius: 70,
+                    backgroundImage: NetworkImage(locationImage),
+                  ),
                 ),
                 Container(
                   alignment: Alignment.center,

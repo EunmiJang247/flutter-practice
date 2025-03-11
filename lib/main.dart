@@ -2,6 +2,7 @@ import 'package:first_app/4fourth_project_meals/screens/firstpage_categories.dar
 import 'package:first_app/4fourth_project_meals/screens/tabs.dart';
 import 'package:first_app/5fifth_project_shopping/screens/firstpage_grocery_list.dart';
 import 'package:first_app/6sixth_project_favorite_places/screens/firstpage_place_list.dart';
+import 'package:first_app/7seventh_project_chatapp/screens/firstpage_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:first_app/1first_project_dice_roller/gradient_container.dart';
 import 'package:first_app/2second_project_quiz/quiz.dart';
@@ -213,37 +214,62 @@ import 'package:google_fonts/google_fonts.dart';
 // }
 
 // 여섯번째 프로젝트_지도앱
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final colorScheme = ColorScheme.fromSeed(
-  brightness: Brightness.dark,
-  seedColor: const Color.fromARGB(255, 102, 6, 247),
-  background: const Color.fromARGB(255, 56, 49, 66),
-);
+// final colorScheme = ColorScheme.fromSeed(
+//   brightness: Brightness.dark,
+//   seedColor: const Color.fromARGB(255, 102, 6, 247),
+//   background: const Color.fromARGB(255, 56, 49, 66),
+// );
 
-final theme = ThemeData().copyWith(
-  scaffoldBackgroundColor: colorScheme.background,
-  colorScheme: colorScheme,
-  textTheme: GoogleFonts.ubuntuCondensedTextTheme().copyWith(
-    titleSmall: GoogleFonts.ubuntuCondensed(
-      fontWeight: FontWeight.bold,
-      color: Colors.white,
-    ),
-    titleMedium: GoogleFonts.ubuntuCondensed(
-      fontWeight: FontWeight.bold,
-      color: Colors.white,
-    ),
-    titleLarge: GoogleFonts.ubuntuCondensed(
-      fontWeight: FontWeight.bold,
-      color: Colors.white,
-    ),
-  ),
-);
+// final theme = ThemeData().copyWith(
+//   scaffoldBackgroundColor: colorScheme.background,
+//   colorScheme: colorScheme,
+//   textTheme: GoogleFonts.ubuntuCondensedTextTheme().copyWith(
+//     titleSmall: GoogleFonts.ubuntuCondensed(
+//       fontWeight: FontWeight.bold,
+//       color: Colors.white,
+//     ),
+//     titleMedium: GoogleFonts.ubuntuCondensed(
+//       fontWeight: FontWeight.bold,
+//       color: Colors.white,
+//     ),
+//     titleLarge: GoogleFonts.ubuntuCondensed(
+//       fontWeight: FontWeight.bold,
+//       color: Colors.white,
+//     ),
+//   ),
+// );
 
-void main() {
-  runApp(
-    const ProviderScope(child: App()),
+// void main() {
+//   runApp(
+//     const ProviderScope(child: App()),
+//   );
+// }
+
+// class App extends StatelessWidget {
+//   const App({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'Great Places',
+//       theme: theme,
+//       home: const PlacesScreen(),
+//     );
+//   }
+// }
+
+// 일곱번째 프로젝트
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
   );
+  runApp(const App());
 }
 
 class App extends StatelessWidget {
@@ -252,9 +278,13 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Great Places',
-      theme: theme,
-      home: const PlacesScreen(),
+      title: 'FlutterChat',
+      theme: ThemeData().copyWith(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color.fromARGB(255, 63, 17, 177)),
+      ),
+      home: const AuthScreen(),
     );
   }
 }

@@ -1135,3 +1135,25 @@ https://developers.google.com/maps/documentation/geocoding/requests-reverse-geoc
 5. 
 
 
+# 구글맵스패키지 이용하기 (Google Maps Package)
+패키지 다운: flutter pub add google_maps_flutter
+
+1. 안드로이드에서
+android/app/build.gradle 파일 수정 필요
+
+2. 메타데이터 추가함
+안드로이드
+<meta-data android:name="com.google.android.geo.API_KEY"
+        android:value="YOUR KEY HERE"/>
+ios
+AppDelegate.swift 변경함.
+
+
+# 
+
+
+
+
+
+
+

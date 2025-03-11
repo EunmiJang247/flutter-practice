@@ -4,11 +4,26 @@ import 'package:first_app/6sixth_project_favorite_places/widgets/places_list.dar
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PlacesScreen extends ConsumerWidget {
+class PlacesScreen extends ConsumerStatefulWidget {
   const PlacesScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PlacesScreen> createState() {
+    return _PlaceScreenState();
+  }
+}
+
+class _PlaceScreenState extends ConsumerState<PlacesScreen> {
+  late Future<void> _placesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _placesFuture = ref.read(userPlacesProvider.notifier).loadPlaces();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final userPlaces = ref.watch(userPlacesProvider);
     void _addItem() async {
       Navigator.of(context).push(MaterialPageRoute(
@@ -24,9 +39,15 @@ class PlacesScreen extends ConsumerWidget {
     );
     if (userPlaces.isNotEmpty) {
       content = Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: PlacesList(places: userPlaces),
-      );
+          padding: const EdgeInsets.all(8.0),
+          // 데이터베이스에서 가져오고 그거를 여기서 보여주겠다
+          child: FutureBuilder(
+            future: _placesFuture,
+            builder: (context, snapshot) =>
+                snapshot.connectionState == ConnectionState.waiting
+                    ? const Center(child: CircularProgressIndicator())
+                    : PlacesList(places: userPlaces),
+          ));
     }
     return Scaffold(
       appBar: AppBar(

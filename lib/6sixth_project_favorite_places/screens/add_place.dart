@@ -24,6 +24,7 @@ class _NewItemState extends ConsumerState<AddPlaceScreen> {
   var _isSending = false;
 
   void _saveItem() {
+    print('오는거야?');
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isSending = true;
@@ -39,7 +40,7 @@ class _NewItemState extends ConsumerState<AddPlaceScreen> {
       });
       return;
     }
-    print(_selectedImage);
+    print('1111');
     ref
         .read(userPlacesProvider.notifier)
         .addPlace(_enteredTitle, _selectedImage!, _selectedLocation!);
@@ -84,6 +85,9 @@ class _NewItemState extends ConsumerState<AddPlaceScreen> {
                       _enteredTitle = value!;
                     },
                     style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(
+                    height: 16,
                   ),
                   // 이미지 인풋을 넣을 것이다
                   ImageInput(onPickImage: (image) {
