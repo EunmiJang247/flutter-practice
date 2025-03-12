@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_app/4fourth_project_meals/screens/firstpage_categories.dart';
 import 'package:first_app/4fourth_project_meals/screens/tabs.dart';
 import 'package:first_app/5fifth_project_shopping/screens/firstpage_grocery_list.dart';
 import 'package:first_app/6sixth_project_favorite_places/screens/firstpage_place_list.dart';
+import 'package:first_app/7seventh_project_chatapp/screens/chat.dart';
 import 'package:first_app/7seventh_project_chatapp/screens/firstpage_auth.dart';
+import 'package:first_app/7seventh_project_chatapp/screens/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:first_app/1first_project_dice_roller/gradient_container.dart';
 import 'package:first_app/2second_project_quiz/quiz.dart';
@@ -284,7 +287,24 @@ class App extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(
             seedColor: const Color.fromARGB(255, 63, 17, 177)),
       ),
-      home: const AuthScreen(),
+      home: StreamBuilder(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          // Stream은 비동기 데이터 흐름을 나타내는 개념이야. 데이터를 지속적으로 수신하고,
+          // 새로운 데이터가 도착할 때마다 UI를 업데이트하는 방식이지
+          builder: (ctx, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return SplashScreen(); // 로딩 화면 표시
+            }
+            if (snapshot.hasData) {
+              // 유저데이터가 있는 경우(로그인된 상태라면 홈 화면으로 이동)
+              return ChatScreen();
+            }
+            return AuthScreen();
+            // 로그인 안 된 상태라면 로그인 화면으로 이동
+          }),
     );
   }
 }
+// 파이어베이스 스토리지 쓰기
+// flutter pub add firebase_storage
+// flutter pub add image_picker

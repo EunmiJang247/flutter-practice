@@ -1,4 +1,8 @@
+import 'package:first_app/7seventh_project_chatapp/widgets/user_image_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+final _firebase = FirebaseAuth.instance;
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -15,8 +19,12 @@ class _AuthScreenState extends State<AuthScreen> {
   var _enteredEmail = '';
   var _enteredPassword = '';
 
-  void _submit() {
+  void _submit() async {
     final isValid = _formKey.currentState!.validate();
+
+    if (!isValid) {
+      return;
+    }
 
     if (isValid) {
       _formKey.currentState!.save();
@@ -24,6 +32,45 @@ class _AuthScreenState extends State<AuthScreen> {
 
     print(_enteredEmail);
     print(_enteredPassword);
+
+    if (_isLogin) {
+      // 로그인 모드
+      try {
+        final userCredentials = await _firebase.signInWithEmailAndPassword(
+            email: _enteredEmail, password: _enteredPassword);
+        // 여기서 유저가 로그인하기를 기다렸다가 로그인하면 토큰이 올바른지 확인해야 하지만 하지 않음. 메인으로감
+
+        print(userCredentials);
+      } on FirebaseAuthException catch (error) {
+        if (error.code == 'email-already-in-use') {
+          // ...
+        }
+        print(error.message);
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error.message ?? 'Authentication Failed'),
+          ),
+        );
+      }
+    } else {
+      // 사인업 모드
+      try {
+        final userCredentials = await _firebase.createUserWithEmailAndPassword(
+            email: _enteredEmail, password: _enteredPassword);
+      } on FirebaseAuthException catch (error) {
+        if (error.code == 'email-already-in-use') {
+          // ...
+        }
+        print(error.message);
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error.message ?? 'Authentication Failed'),
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -56,6 +103,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          if (!_isLogin) UserImagePicker(),
                           TextFormField(
                             decoration: const InputDecoration(
                                 labelText: 'Email address'),

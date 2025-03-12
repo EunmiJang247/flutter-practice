@@ -1,0 +1,2 @@
+/Users/jennymac/Desktop/flutter-practice/android/app/.cxx/Debug/5x5e3q63/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/jennymac/Desktop/flutter-practice/android/app/.cxx/Debug/5x5e3q63/armeabi-v7a/CMakeFiles/rebuild_cache.dir

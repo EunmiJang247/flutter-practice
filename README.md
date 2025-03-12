@@ -1149,7 +1149,31 @@ ios
 AppDelegate.swift 변경함.
 
 
-# 
+# 에러 해결방법
+발생한 에러: 
+
+Error: The plugin "firebase_auth" requires a higher minimum iOS deployment version than your
+application is targeting.
+To build, increase your application's deployment target to at least 13.0 as described at
+https://flutter.dev/to/ios-deploy
+Error running pod install
+Error launching application on iPhone 15 Pro Max.
+
+해결방법:
+ios/Podfile 파일을 열어서 아래 부분을 수정해
+
+platform :ios, '12.0'  # 기존
+아래처럼 변경 (최소 13.0 이상)
+
+platform :ios, '14.0'
+그다음
+cd ios
+rm -rf Pods Podfile.lock
+pod install --repo-update
+cd ..
+flutter clean
+flutter pub get
+flutter run
 
 
 
